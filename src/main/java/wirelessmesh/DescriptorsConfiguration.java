@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DescriptorsConfiguration {
     @Bean
-    public Descriptors.ServiceDescriptor wirelessmeshServiceDescriptor() {
+    public Descriptors.ServiceDescriptor deviceEntityServiceDescriptor() {
         return Wirelessmeshservice.getDescriptor().findServiceByName("WirelessmeshService");
     }
 

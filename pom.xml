@@ -28,6 +28,12 @@
             <groupId>io.cloudstate</groupId>
             <artifactId>cloudstate-springboot-support</artifactId>
             <version>0.5.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 

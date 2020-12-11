@@ -27,6 +27,7 @@
       */
      private boolean activated = false;
 
+     @EntityId
      private String deviceId;
 
      /**
@@ -40,14 +41,6 @@
      private String room = "";
 
      private boolean nightlightOn = false;
-
-     /**
-      * Constructor.
-      * @param deviceId The entity id will be the deviceId.
-      */
-     public DeviceEntity(@EntityId String deviceId) {
-         this.deviceId = deviceId;
-     }
 
      /**
       * Activate this device and emit event.

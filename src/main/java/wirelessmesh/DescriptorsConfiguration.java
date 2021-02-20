@@ -7,12 +7,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DescriptorsConfiguration {
     @Bean
-    public Descriptors.ServiceDescriptor deviceEntityServiceDescriptor() {
-        return Wirelessmeshservice.getDescriptor().findServiceByName("WirelessmeshService");
+    public Descriptors.ServiceDescriptor customerLocationEntityServiceDescriptor() {
+        return Wirelessmesh.getDescriptor().findServiceByName("WirelessmeshService");
     }
 
     @Bean
-    public Descriptors.FileDescriptor[] deviceEntityFileDescriptors() {
+    public Descriptors.FileDescriptor[] customerLocationEntityFileDescriptors() {
         return new Descriptors.FileDescriptor[]{domain.Domain.getDescriptor()};
     }
 }

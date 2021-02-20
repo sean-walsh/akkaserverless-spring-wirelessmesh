@@ -1,4 +1,4 @@
-package wirelessmesh.domain;
+package wirelessmesh;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.DataOutputStream;
@@ -10,10 +10,17 @@ import java.net.URL;
  */
 public class DeviceClient {
 
-    public void toggleNightlight(String deviceId) throws IOException {
+    /**
+     * This will set the device nightlight to the opposite value on the physical device (bulb).
+     *
+     * @param accessToken Necessary for secure communication to the external API.
+     * @param deviceId The deviceId that also much match the LIFX deviceId in order to control the bulb.
+     * @throws IOException
+     */
+    public void toggleNightlight(String accessToken, String deviceId) throws IOException {
         URL url = new URL("https://api.lifx.com/v1/lights/" + deviceId + "/toggle");
         HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
-        conn.setRequestProperty("Authorization","Bearer " + MyToken.token);
+        conn.setRequestProperty("Authorization","Bearer " + accessToken);
         conn.setRequestProperty("Content-Type","application/json");
         conn.setRequestMethod("POST");
 

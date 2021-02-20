@@ -6,7 +6,9 @@
  import io.cloudstate.springboot.starter.CloudstateContext;
  import io.cloudstate.springboot.starter.CloudstateEntityBean;
 
- import wirelessmesh.DeviceClient;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import wirelessmesh.DeviceService;
+ import wirelessmesh.PubsubService;
  import wirelessmesh.Wirelessmesh.*;
  import domain.Domain.*;
 
@@ -34,6 +36,10 @@
      @CloudstateContext
      private EventSourcedContext context;
 
+     private final DeviceService deviceService;
+
+     private final PubsubService pubsubService;
+
      /**
       * This section contains the private state variables necessary for this entity.
       */
@@ -48,6 +54,17 @@
      private String accessToken = "";
 
      private List<Device> devices = new ArrayList<Device>();
+
+     /**
+      * Constructor with service autowiring.
+      * @param deviceService DeviceService to communicate with physical devices
+      * @param pubsubService PubsubService to publish events to external
+      */
+     @Autowired
+     public CustomerLocationEntity(DeviceService deviceService, PubsubService pubsubService) {
+         this.deviceService = deviceService;
+         this.pubsubService = pubsubService;
+     }
 
      /**
       * This is the command handler for adding a customer location as defined in protobuf.
@@ -67,6 +84,7 @@
                  .build();
 
          ctx.emit(event);
+         pubsubService.publish(event.toByteString());
          return Empty.getDefaultInstance();
      }
 
@@ -103,6 +121,7 @@
                  .build();
 
          ctx.emit(event);
+         pubsubService.publish(event.toByteString());
          return Empty.getDefaultInstance();
      }
 
@@ -141,6 +160,7 @@
                  .build();
 
          ctx.emit(event);
+         pubsubService.publish(event.toByteString());
          return Empty.getDefaultInstance();
      }
 
@@ -181,6 +201,7 @@
                  .setCustomerLocationId(customerLocationId).build();
 
          ctx.emit(event);
+         pubsubService.publish(event.toByteString());
          return Empty.getDefaultInstance();
      }
 
@@ -218,6 +239,7 @@
                  .setRoom(assignRoomCommand.getRoom()).build();
 
          ctx.emit(event);
+         pubsubService.publish(event.toByteString());
          return Empty.getDefaultInstance();
      }
 
@@ -255,17 +277,14 @@
              ctx.fail("Device does not exist");
          }
 
-         // Note: we side effect here (turn on/off the nightlight) in the command handler, not in the event, since we
-         //       only want it to happen once and not during subsequent event handling if and when this entity reloads.
-         DeviceClient client = new DeviceClient();
-         client.toggleNightlight(accessToken, toggleNightlightCommand.getDeviceId());
-
          NightlightToggled event = NightlightToggled.newBuilder()
                  .setDeviceId(toggleNightlightCommand.getDeviceId())
                  .setCustomerLocationId(customerLocationId)
                  .setNightlightOn(!deviceMaybe.get().getNightlightOn()).build();
 
          ctx.emit(event);
+         deviceService.toggleNightlight(accessToken, toggleNightlightCommand.getDeviceId());
+         pubsubService.publish(event.toByteString());
          return Empty.getDefaultInstance();
      }
 
